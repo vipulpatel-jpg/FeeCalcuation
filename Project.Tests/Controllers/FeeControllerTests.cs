@@ -61,4 +61,36 @@ public class FeeControllerTests
         Assert.NotNull(result);
         Assert.Equal(expectedResult, result.Value);
     }
+
+    [Fact]
+    public void Calculate_NullTransaction_ReturnsBadRequest()
+    {
+        // Arrange
+        var mockCalculator = new Mock<IFeeCalculator>();
+        var controller = new FeeController(mockCalculator.Object);
+
+        // Act
+        var result = controller.Calculate(null);
+
+        // Assert
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public void Calculate_InvalidModelState_ReturnsBadRequest()
+    {
+        // Arrange
+        var mockCalculator = new Mock<IFeeCalculator>();
+        var controller = new FeeController(mockCalculator.Object);
+        var transaction = new Transaction { Amount = -100, Currency = "EUR" };
+
+        // Simulate ModelState error
+        controller.ModelState.AddModelError("Amount", "Amount must be between 0.01 and 999,999,999.99");
+
+        // Act
+        var result = controller.Calculate(transaction);
+
+        // Assert
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
 }

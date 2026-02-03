@@ -96,4 +96,14 @@ public class FeeCalculatorTests
         Assert.NotNull(result);
         Assert.Equal(12.345m, result.Fee);
     }
+
+    [Fact]
+    public void Calculate_NullTransaction_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var calculator = new FeeCalculator();
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => calculator.Calculate(null));
+    }
 }
