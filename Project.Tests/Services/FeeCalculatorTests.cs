@@ -49,7 +49,7 @@ public class FeeCalculatorTests
     }
 
     [Fact]
-    public void Calculate_ValidTransaction_ReturnsZeroFee()
+    public void Calculate_ValidTransaction_ReturnsCorrectFee()
     {
         // Arrange
         var calculator = new FeeCalculator();
@@ -59,7 +59,7 @@ public class FeeCalculatorTests
         var result = calculator.Calculate(transaction);
 
         // Assert
-        Assert.Equal(0, result.Fee);
+        Assert.Equal(10, result.Fee);
     }
 
     [Fact]
@@ -79,6 +79,21 @@ public class FeeCalculatorTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(0, result.Fee);
+        Assert.Equal(10, result.Fee);
+    }
+
+    [Fact]
+    public void Calculate_DecimalAmount_ReturnsDecimalFee()
+    {
+        // Arrange
+        var calculator = new FeeCalculator();
+        var transaction = new Transaction { Amount = 123.45m, Currency = "EUR" };
+
+        // Act
+        var result = calculator.Calculate(transaction);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(12.345m, result.Fee);
     }
 }
